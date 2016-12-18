@@ -9,6 +9,14 @@
 *                                                                              *
 * This software is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY    *
 * KIND, either express or implied.                                             *
+********************************************************************************
+*                                                                              *
+*            Frame to mimic the CAME TOP432NA remote control:                  *
+*                                                                              *
+*  Start bit (header)  __       10 bits code       __ Ending 2 bits (trailer)  *
+*                        |  _________|_________   |                            *
+*                        0 [X X X X X X X X X X] 0 1                           *
+*                                                                              *
 *******************************************************************************/
 
 /* Get bit of the number n at position p */
@@ -27,7 +35,7 @@
 #define  BTW_REEMIT_DELAY_MS   12   /* 12ms delay before sending same signal.*/
 #define  BTW_FRAMES_DELAY_MS   50   /* 50ms delay between each combinaison.  */
 
-#define  CODE                  375  /* CHANGE CODE HERE. Between 0 and 1024. */
+#define  CODE                  375  /* CHANGE CODE HERE. Between 0 and 1023. */
 
 
 /**                      ___
@@ -57,7 +65,7 @@ void send_one()
 /**
  * Emit a frame (header + code + trailer).
  *
- * @param   code       Code to send (between 0 and 1024 ).
+ * @param   code       Code to send (between 0 and 1023).
  * @param   nb_emit    Number of times the frame should be emitted.
  */
 void send_frame(const uint32_t code, const int nb_emit)
