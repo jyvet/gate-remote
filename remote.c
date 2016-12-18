@@ -25,6 +25,7 @@
 /* Arduino settings  */
 #define  OUTPUT_PIN            12   /* Output pin to the transmitter.        */
 #define  RESTART_DELAY_MS      5000 /* 5s delay before restart.              */
+#define  SERIAL_SPEED_BAUD     9600 /* Speed for serial communication.       */
 
 /* Frame characteristics */
 #define  FRAME_NB_CODE_BITS    10   /* Number of bits in the code.           */
@@ -36,6 +37,7 @@
 #define  BTW_FRAMES_DELAY_MS   50   /* 50ms delay between each combinaison.  */
 
 #define  CODE                  375  /* CHANGE CODE HERE. Between 0 and 1023. */
+//#define  SCAN_MODE                /* Uncomment to enter scan mode.         */
 
 
 /**                      ___
@@ -92,14 +94,40 @@ void send_frame(const uint32_t code, const int nb_emit)
     }
 }
 
+#ifdef SCAN_MODE
+/**
+ * Emit all possible frames to scan all combinations.
+ */
+void scan_mode()
+{
+    for (int i = 0; i < FRAME_NB_CODE_COMB; i++)
+    {
+        Serial.print("Sending code: ");
+        Serial.println(i);
+
+        delay(BTW_FRAMES_DELAY_MS);
+        send_frame(i, FRAME_NB_REEMIT);
+        delay(BTW_FRAMES_DELAY_MS);
+    }
+}
+#endif
+
 void setup()
 {
     pinMode(OUTPUT_PIN, OUTPUT);     /* Set PIN in output mode. */
+
+#ifdef SCAN_MODE
+    Serial.begin(SERIAL_SPEED_BAUD);
+#endif
 }
 
 void loop()
 {
+#ifdef SCAN_MODE
+    scan_mode();
+#else
     send_frame(CODE, FRAME_NB_REEMIT);
+#endif
     delay(RESTART_DELAY_MS);
 }
 
